@@ -1,5 +1,6 @@
 package com.pokemontracker.app.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pokemontracker.app.data.PriceEntry
 import com.pokemontracker.app.ui.CardDetailViewModel
 import com.pokemontracker.app.ui.components.CardImage
+import com.pokemontracker.app.ui.components.FullscreenImageViewer
 import com.pokemontracker.app.ui.components.LineChart
 import com.pokemontracker.app.util.Formatters
 import com.pokemontracker.app.util.daysToMillis
@@ -67,6 +69,7 @@ fun CardDetailScreen(
 
     var showPriceDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showFullscreen by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -111,7 +114,10 @@ fun CardDetailScreen(
                     modifier = Modifier
                         .width(140.dp)
                         .height(196.dp)
-                        .clip(RoundedCornerShape(12.dp)),
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(enabled = currentCard.imagePath != null) {
+                            showFullscreen = true
+                        },
                 )
                 Spacer(Modifier.width(16.dp))
                 Column {
@@ -140,6 +146,16 @@ fun CardDetailScreen(
                         Spacer(Modifier.width(8.dp))
                         Text("Preis aktualisieren")
                     }
+                }
+            }
+
+            // Tap the photo to view it full screen (with zoom).
+            currentCard.imagePath?.let { path ->
+                if (showFullscreen) {
+                    FullscreenImageViewer(
+                        imagePath = path,
+                        onDismiss = { showFullscreen = false },
+                    )
                 }
             }
 

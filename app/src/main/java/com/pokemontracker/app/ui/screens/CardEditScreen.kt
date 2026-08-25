@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pokemontracker.app.ui.CardEditViewModel
 import com.pokemontracker.app.ui.components.CardImage
+import com.pokemontracker.app.ui.components.LanguageDropdown
 import com.pokemontracker.app.util.ImageStorage
 import java.io.File
 
@@ -165,7 +166,10 @@ fun CardEditScreen(
 
             // Text fields.
             LabeledField("Name *", viewModel.name, { viewModel.name = it })
-            LabeledField("Sprache", viewModel.language, { viewModel.language = it })
+            LanguageDropdown(
+                value = viewModel.language,
+                onValueChange = { viewModel.language = it },
+            )
             LabeledField("Set / Pack", viewModel.setPack, { viewModel.setPack = it })
             LabeledField("Kartennummer", viewModel.cardNumber, { viewModel.cardNumber = it })
             LabeledField("Zustand", viewModel.condition, { viewModel.condition = it })
