@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Temporary location where the camera app writes a freshly captured photo. -->
+    <cache-path
+        name="camera_temp"
+        path="camera/" />
+    <!-- Permanent per-card images stored in the app's private files directory. -->
+    <files-path
+        name="card_images"
+        path="card_images/" />
+</paths>
