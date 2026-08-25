@@ -1,0 +1,55 @@
+name: Build APK
+
+# Baut eine installierbare Debug-APK auf GitHubs Servern und stellt sie als
+# Download bereit – als Actions-Artifact und als Datei an einem GitHub Release.
+on:
+  push:
+    branches:
+      - "claude/pokemon-cards-tracker-app-ut9cfp"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" > /dev/null
+
+      - name: Build debug APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Upload APK as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Publish APK to a Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: Debug APK (neueste)
+          body: |
+            Automatisch gebaute, installierbare Debug-APK der Pokémon Card Tracker App.
+            Auf dem Android-Gerät herunterladen und installieren
+            (dafür einmalig „Installieren aus unbekannten Quellen" erlauben).
+          prerelease: true
+          files: app/build/outputs/apk/debug/app-debug.apk
